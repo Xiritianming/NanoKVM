@@ -10,10 +10,13 @@ import { resolutionAtom } from '@/jotai/screen.ts';
 
 const resolutions: TypeResolution[] = [
   { width: 0, height: 0 },
-  { width: 1920, height: 1080 },
-  { width: 1280, height: 720 },
-  { width: 800, height: 600 },
-  { width: 640, height: 480 }
+  { width: 1920, height: 1080 }, // 16:9
+  { width: 1600, height: 900 },  // 16:9
+  { width: 1280, height: 720 },  // 16:9
+  { width: 1280, height: 960 },  // 4:3
+  { width: 1024, height: 768 },  // 4:3
+  { width: 800, height: 600 },   // 4:3
+  { width: 640, height: 480 }    // 4:3
 ];
 
 export const Resolution = () => {

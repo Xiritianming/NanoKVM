@@ -30,7 +30,12 @@ export const Mjpeg = () => {
         style={
           resolution?.width
             ? { width: resolution.width, height: resolution.height, objectFit: 'cover' }
-            : { maxHeight: '100vh', objectFit: 'scale-down' }
+            : { 
+                maxWidth: '100vw', 
+                maxHeight: '100vh', 
+                objectFit: 'contain',
+                aspectRatio: 'auto'
+              }
         }
         src={`${getBaseUrl('http')}/api/stream/mjpeg`}
         fallback={MonitorXIcon}

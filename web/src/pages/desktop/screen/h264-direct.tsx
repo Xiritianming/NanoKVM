@@ -176,7 +176,12 @@ export const H264Direct = () => {
         style={
           resolution?.width
             ? { width: resolution.width, height: resolution.height, objectFit: 'cover' }
-            : { maxWidth: '100%', maxHeight: '100%', objectFit: 'scale-down' }
+            : { 
+                maxWidth: '100vw', 
+                maxHeight: '100vh', 
+                objectFit: 'contain',
+                aspectRatio: 'auto'
+              }
         }
       ></canvas>
     </div>
