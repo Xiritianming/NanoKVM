@@ -31,12 +31,31 @@ export const Desktop = () => {
     const res = storage.getResolution() || { width: 0, height: 0 };
     setResolution(res);
 
+    // Register for resolution change notifications
+    client.register('resolution_change', (message) => {
+      try {
+        const data = JSON.parse(message.data as string);
+        if (data.type === 'resolution_change') {
+          // Only update if current resolution is auto mode (0x0)
+          const currentResolution = storage.getResolution() || { width: 0, height: 0 };
+          if (currentResolution.width === 0 && currentResolution.height === 0) {
+            const newResolution = { width: data.width, height: data.height };
+            setResolution(newResolution);
+            console.log('Auto-updated resolution to:', newResolution);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to parse resolution change message:', err);
+      }
+    });
+
     const timer = setInterval(() => {
       client.send([0]);
     }, 60 * 1000);
 
     return () => {
       clearInterval(timer);
+      client.unregister('resolution_change');
       client.unregister('stream');
       client.close();
     };

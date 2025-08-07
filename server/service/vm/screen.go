@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -17,6 +18,55 @@ var screenFileMap = map[string]string{
 	"fps":        "/kvmapp/kvm/fps",
 	"quality":    "/kvmapp/kvm/qlty",
 	"resolution": "/kvmapp/kvm/res",
+}
+
+type ScreenInfo struct {
+	ConfiguredWidth  uint16 `json:"configuredWidth"`
+	ConfiguredHeight uint16 `json:"configuredHeight"`
+	ActualWidth      uint16 `json:"actualWidth"`
+	ActualHeight     uint16 `json:"actualHeight"`
+	IsAutoMode       bool   `json:"isAutoMode"`
+}
+
+func (s *Service) GetScreen(c *gin.Context) {
+	var rsp proto.Response
+
+	screen := common.GetScreen()
+	
+	// Get actual resolution from files
+	actualWidth, actualHeight := getCurrentActualResolution()
+	
+	screenInfo := ScreenInfo{
+		ConfiguredWidth:  screen.Width,
+		ConfiguredHeight: screen.Height,
+		ActualWidth:      actualWidth,
+		ActualHeight:     actualHeight,
+		IsAutoMode:       screen.Width == 0 && screen.Height == 0,
+	}
+
+	rsp.OkRspWithData(c, screenInfo)
+}
+
+func getCurrentActualResolution() (uint16, uint16) {
+	widthFile := "/kvmapp/kvm/width"
+	heightFile := "/kvmapp/kvm/height"
+
+	width := uint16(1920) // Default
+	height := uint16(1080) // Default
+
+	if data, err := os.ReadFile(widthFile); err == nil {
+		if w, err := strconv.Atoi(strings.TrimSpace(string(data))); err == nil && w > 0 {
+			width = uint16(w)
+		}
+	}
+
+	if data, err := os.ReadFile(heightFile); err == nil {
+		if h, err := strconv.Atoi(strings.TrimSpace(string(data))); err == nil && h > 0 {
+			height = uint16(h)
+		}
+	}
+
+	return width, height
 }
 
 func (s *Service) SetScreen(c *gin.Context) {

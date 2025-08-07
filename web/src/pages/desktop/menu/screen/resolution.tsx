@@ -3,7 +3,7 @@ import { useAtom } from 'jotai';
 import { CheckIcon, CircleHelpIcon, RatioIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-import { updateScreen } from '@/api/vm';
+import { updateScreen, getScreen } from '@/api/vm';
 import { Resolution as TypeResolution } from '@/types';
 import { setResolution as setCookie } from '@/lib/localstorage';
 import { resolutionAtom } from '@/jotai/screen.ts';

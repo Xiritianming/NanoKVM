@@ -11,6 +11,7 @@ import (
 
 	"NanoKVM-Server/service/hid"
 	"NanoKVM-Server/service/vm/jiggler"
+	"NanoKVM-Server/service"
 )
 
 const (
@@ -53,6 +54,9 @@ func (s *Service) Connect(c *gin.Context) {
 
 func (c *WsClient) Start() {
 	defer c.Clean()
+
+	// Add to resolution monitor
+	service.GetResolutionMonitor().AddClient(c.conn)
 
 	c.hid.Open()
 
@@ -98,6 +102,9 @@ func (c *WsClient) Write(message []byte) error {
 }
 
 func (c *WsClient) Clean() {
+	// Remove from resolution monitor
+	service.GetResolutionMonitor().RemoveClient(c.conn)
+
 	_ = c.conn.Close()
 
 	go clearQueue(c.keyboard)

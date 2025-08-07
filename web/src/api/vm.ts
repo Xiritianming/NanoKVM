@@ -24,6 +24,11 @@ export function getGpio() {
   return http.get('/api/vm/gpio');
 }
 
+// get screen information
+export function getScreen() {
+  return http.get('/api/vm/screen');
+}
+
 // update screen arguments
 export function updateScreen(type: string, value: number) {
   const data = {
